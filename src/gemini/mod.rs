@@ -1,6 +1,5 @@
 use std::env;
 use serde::{Deserialize, Serialize};
-use dotenvy::dotenv;
 
 #[derive(Serialize)]
 struct GeminiRequest {
@@ -79,7 +78,7 @@ Here are the changes:
 }
 
 pub async fn get_commit_message(prompt: &str) -> anyhow::Result<String> {
-    dotenv().ok();
+    dotenvy::from_path(format!("{}/.env", env::current_exe()?.parent().unwrap().display())).ok();
     let api_key = env::var("GEMINI_API_KEY")?;
     let url = format!(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={}",
