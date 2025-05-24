@@ -6,7 +6,6 @@ use crate::cli::Cli;
 mod cli;
 mod git;
 mod gemini;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
