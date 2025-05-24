@@ -1,7 +1,16 @@
 [package]
 name = "juckx"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+authors = ["devil <europedreadlydevil@gmail.com>"]
+description = "Rust CLI tool to automate git commit message generation using Gemini AI"
+license = "MIT"
+repository = "https://github.com/morphqdd/juckx"
+homepage = "https://github.com/morphqdd/juckx"
+documentation = "https://docs.rs/juckx"
+keywords = ["git", "cli", "automation", "ai", "gemini"]
+categories = ["command-line-utilities"]
+readme = "README.md"
 
 [dependencies]
 clap = {version = "4.5.38", features = ["derive"]}
