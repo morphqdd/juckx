@@ -1,3 +1,4 @@
+use std::env;
 use clap::Parser;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
@@ -15,7 +16,7 @@ async fn main() -> anyhow::Result<()> {
             .write(true)
             .read(true)
             .create(true)
-            .open(".env").await?
+            .open(format!("{}/.env", env::current_exe().unwrap().parent().unwrap().display())).await?
             .write_all(format!("GEMINI_API_KEY={}", api).as_bytes()).await?;
     }
 
