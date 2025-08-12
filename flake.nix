@@ -6,7 +6,7 @@
   outputs = { self, nixpkgs }:
     let 
       system = "x86_64-linux";
-        pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs { inherit system; };
 
       rustSrc = pkgs.lib.cleanSourceWith {
         src = ./.;
@@ -15,12 +15,12 @@
 
       manifestPath = "${toString rustSrc}/Cargo.toml";
       manifest = builtins.fromTOML ( builtins.readFile manifestPath );
-      
+
       cargoNew = pkgs.writeShellScriptBin "cargo-init" ''
         export CARGO_TARGET_DIR=./target
         exec ${pkgs.cargo}/bin/cargo init "$@"
       '';
-      
+
       cargoRun = pkgs.writeShellScriptBin "cargo-run" ''
         export CARGO_TARGET_DIR=./target
         exec ${pkgs.cargo}/bin/cargo run --manifest-path ./Cargo.toml "$@"
@@ -43,6 +43,12 @@
         src = rustSrc;
         cargoLock.lockFile = "${src}/Cargo.lock";
 
+        nativeBuildInputs = [ pkgs.pkg-config ];
+        buildInputs = [ pkgs.openssl ];
+
+        OPENSSL_DIR = "${pkgs.openssl.dev}";
+        OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
+        PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
       };
 
       devShells."${system}".default = pkgs.mkShell {
