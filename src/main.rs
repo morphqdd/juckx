@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs};
 use clap::Parser;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
@@ -12,12 +12,16 @@ async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     if let Some(api) = cli.with_api {
+        let path = env::home_dir().unwrap().join(".config/juckx");
+        if !path.exists() {
+            fs::create_dir_all(&path).unwrap();
+        } 
         OpenOptions::new()
             .write(true)
             .read(true)
             .create(true)
-            .open(format!("{}/.env", env::current_exe().unwrap().parent().unwrap().display())).await?
-            .write_all(format!("GEMINI_API_KEY={}", api).as_bytes()).await?;
+            .open(format!("{}/.env", path.display())).await?
+            .write_all(format!("GEMINI_API_KEY={api}").as_bytes()).await?;
     }
 
     if !git::is_git_repo().await {
@@ -39,7 +43,7 @@ async fn main() -> anyhow::Result<()> {
     let prompt = gemini::build_prompt(&diff_or_files, &cli.lang);
     let commit_msg = gemini::get_commit_message(&prompt).await?;
 
-    println!("💬 Commit message:\n{}", commit_msg);
+    println!("💬 Commit message:\n{commit_msg}");
 
     if cli.dry_run {
         println!("🧪 Dry run enabled, exiting.");
