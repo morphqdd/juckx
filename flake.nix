@@ -43,17 +43,18 @@
         src = rustSrc;
         cargoLock.lockFile = "${src}/Cargo.lock";
 
-        opensslStatic = pkgs.openssl.override { static = true; };
+        nativeBuildInputs = [ pkgs.pkg-config pkgs.makeWrapper ];
+        buildInputs = [ pkgs.openssl ];
 
-        nativeBuildInputs = [ pkgs.pkg-config ];
-        buildInputs = [ opensslStatic pkgs.zlib ];
+        OPENSSL_DIR = "${pkgs.openssl.dev}";
+        OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
+        PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
 
-        OPENSSL_STATIC = "1";
-        OPENSSL_DIR = "${opensslStatic.dev}";
-        OPENSSL_LIB_DIR = "${opensslStatic.out}/lib";
-        PKG_CONFIG_PATH = "${opensslStatic.dev}/lib/pkgconfig";   
-      };
-
+        postInstall = ''
+          wrapProgram $out/bin/${pname} \
+            --set LD_LIBRARY_PATH "${pkgs.openssl.out}/lib"
+        '';
+      };      
       devShells."${system}".default = pkgs.mkShell {
         buildInputs = with pkgs; [
           rustc 
