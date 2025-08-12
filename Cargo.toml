@@ -1,6 +1,6 @@
 [package]
 name = "juckx"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 authors = ["devil <europedreadlydevil@gmail.com>"]
 description = "Rust CLI tool to automate git commit message generation using Gemini AI"
