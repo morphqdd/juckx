@@ -78,7 +78,7 @@ Here are the changes:
 }
 
 pub async fn get_commit_message(prompt: &str) -> anyhow::Result<String> {
-    dotenvy::from_path(format!("{}/.env", env::current_exe()?.parent().unwrap().display())).ok();
+        dotenvy::from_path(format!("{}/.env", env::home_dir().unwrap().join(".config/juckx").display())).ok();
     let api_key = env::var("GEMINI_API_KEY")?;
     let url = format!(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={}",
